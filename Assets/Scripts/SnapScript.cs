@@ -117,7 +117,7 @@ public class SnapScript : MonoBehaviour
         }
 
         if (isSnapped) {
-            transform.position = Camera.main.transform.position - transform.position/2;
+            transform.position = (Camera.main.transform.position - transform.position) / 2;
             isSnapped = false;
         }
 
