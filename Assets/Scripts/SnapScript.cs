@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +8,34 @@ public class SnapScript : MonoBehaviour
 {
     [SerializeField] int gridSize = 5;
     [SerializeField] [Range(0, 100)] int snapDist;
+    [SerializeField] GameObject buttonObject;
 
+    PartSelection ps;
+    ButtonController buttonController;
 
     public bool isSnapped = false;
+    bool onObject = false;
+    public bool buildMode;
+
+    private void Start() {
+        ps = GetComponent<PartSelection>();
+        buttonController = buttonObject.GetComponent<ButtonController>();
+    }
     private void Update() {
-        snapToGrid();
+        if (buttonController.buildModeOn) {
+            snapToGrid();
+            HandleSelection();
+        }
+        buildMode = buttonController.buildModeOn;
+    }
+
+    private void HandleSelection() {
+        if (Input.GetMouseButtonDown(0)) {
+            if (onObject)
+                ps.isSelected = true;
+            else 
+                ps.isSelected = false;
+        }
     }
 
     private void snapToGrid() {
@@ -33,10 +57,27 @@ public class SnapScript : MonoBehaviour
         ;
     }
 
+    private void OnMouseDown() {
+        if(buildMode)
+            ps.isSelected = true;
+    }
     private void OnMouseDrag() {
-        TransformObj();
+        if (buildMode) {
+            if (ps.isSelected) {
+                TransformObj();
+                SnapToObj();
+            }
+        }
+    }
 
-        SnapToObj();
+    private void OnMouseEnter() {
+        if(buildMode)
+            onObject = true;
+    }
+
+    private void OnMouseExit() {
+        if(buildMode)
+            onObject = false;
     }
 
     private void TransformObj() {
@@ -56,7 +97,7 @@ public class SnapScript : MonoBehaviour
             isSnapped = false;
 
 
-            if (hit.collider.name == "Cube") {
+            if (hit.collider.name == "Cube" && !isSnapped) {
                 Debug.DrawRay(Camera.main.transform.position, rayDir * hit.distance, Color.blue);
                 Vector3 normal = hit.normal;
                 normal = hit.transform.TransformDirection(normal);
@@ -109,6 +150,8 @@ public class SnapScript : MonoBehaviour
                     ;
                 }
                 isSnapped = true;
+            } else {
+                isSnapped = false;
             }
 
         } else {
