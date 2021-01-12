@@ -13,14 +13,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject tpCam;
 
     Rigidbody rb;
+    SaveData save;
 
     Vector3 fwdDir;
 
     public bool firstPerson = true;
     bool isGrounded = false;
+    bool shiftDown = false;
 
     private void Start() {
         rb = GetComponent<Rigidbody>();
+        save = GetComponent<SaveData>();
+        //NEVER save.addMoney AT START!!! (Or Fix Bug)
     }
 
     private void Update() {
@@ -45,13 +49,28 @@ public class PlayerController : MonoBehaviour
 
         Movement();
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift)) {
             playerSpeed *= 2;
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+            shiftDown = true;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift)) {
             playerSpeed /= 2;
+            shiftDown = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.V)) {
             firstPerson = !firstPerson;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            if (!shiftDown)
+                save.addData("money", 1);
+            else
+                save.removeData("money", 1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Insert)) {
+            save.clearDataHistory(true);
         }
 
         if (firstPerson)
