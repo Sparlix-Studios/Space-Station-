@@ -14,13 +14,15 @@ public class SaveData :MonoBehaviour {
     bool exists;
 
     Dictionary<string, float> dataDict = new Dictionary<string, float>();
-    List<string> data = new List<string>();
+    List<string> stringData = new List<string>();
     private void Awake() {
         path = @"F:\linco\GameDev2.0\Space Station\Assets\Resources\SaveData.txt";
     }
 
     private void Update() {
-        money = int.Parse(File.ReadLines(path).Last(), System.Globalization.NumberStyles.Float);
+        money = dataValueFromDict("money");
+        stringData = new List<string>(dataDict.Keys);
+        Debug.Log(stringData);
     }
     public void writeLine() {
         StreamWriter writer = new StreamWriter(path, true);
@@ -51,25 +53,74 @@ public class SaveData :MonoBehaviour {
             File.WriteAllLines(path, currentMoney.Split('\n'));
     }
 
-    public void addDataType(string name) {
-        if (searchDatabase(name, false, true)) { return; } else {
-            searchDatabase(name, true, false);
-        }
+    public void addDataType(string name, float startingValue = 0f, bool addToDataDict = true) {
+        if (searchDataHistory(name, false, true)) { Debug.LogError("Variable string already exists in data history!"); } else {
+            if(addToDataDict)
+                searchDataHistory(name, true, false);
+            var formattedVar = name + " : " + startingValue;
 
+            StreamWriter writer = new StreamWriter(path);
+            writer.WriteLine(formattedVar);
+            writer.Close();
+        }
     }
 
     public void addData(string dataType, float Amt) {
-        StreamWriter writer = new StreamWriter(path, true);
+        float dataValue = 0f;
+        for(int i = File.ReadAllLines(path).Length + 1; i-- > 0;) {
+            StreamReader reader = new StreamReader(path);
+            var line = reader.ReadLine();
+            reader.Close();
+            string dataValueMatch = Regex.Match(line, @"([-+]?[0-9]*\.?[0-9]+)").Value;
+            dataValue = float.Parse(dataValueMatch);
 
-        money += Amt;
-        writer.WriteLine(money);
-        writer.Close();
+            string name = new String(line.Where(Char.IsLetter).ToArray());
+
+            if(dataValue != 0f) {
+                break;
+            }
+        }
+
+
+        if (dataValue != 0) {
+            StreamWriter writer = new StreamWriter(path, true);
+            dataValue += Amt;
+            writer.WriteLine(name + " : " + dataValue);
+            writer.Close();
+        }
     }
     public void removeData(string dataType, float Amt) {
-        StreamWriter writer = new StreamWriter(path, true);
-        money -= Amt;
-        writer.WriteLine(money);
-        writer.Close();
+        float dataValue = 0f;
+        for (int i = File.ReadAllLines(path).Length + 1; i-- > 0;) {
+            StreamReader reader = new StreamReader(path);
+            var line = reader.ReadLine();
+            reader.Close();
+            string dataValueMatch = Regex.Match(line, @"([-+]?[0-9]*\.?[0-9]+)").Value;
+            dataValue = float.Parse(dataValueMatch);
+
+            string name = new String(line.Where(Char.IsLetter).ToArray());
+
+            if (dataValue != 0f) {
+                break;
+            }
+        }
+
+
+        if (dataValue != 0) {
+            StreamWriter writer = new StreamWriter(path, true);
+            dataValue -= Amt;
+            writer.WriteLine(name + " : " + dataValue);
+            writer.Close();
+        }
+    }
+
+    public float dataValueFromDict(string name) {
+        if (searchDataDict(name)) {
+            return dataDict[name];
+        } else {
+            Debug.LogError("Data variable ' "+name+" 'does not exist");
+            return 0.0f;
+        }
     }
 
     /// <summary>
@@ -77,7 +128,7 @@ public class SaveData :MonoBehaviour {
     /// </summary>
     /// <param name="DataName"></param>
     /// <param name="AddToDict"></param>
-    private bool searchDatabase(string dataName, bool addToDict, bool returnBool) {
+    private bool searchDataHistory(string dataName, bool addToDict, bool returnBool) {
 
         for (int i = File.ReadAllLines(path).Length + 1; i-- > 0;) {
             StreamReader reader = new StreamReader(path);
@@ -89,8 +140,9 @@ public class SaveData :MonoBehaviour {
             string name = new String(line.Where(Char.IsLetter).ToArray());
             if (name == dataName) {
                 if (addToDict)
-                    dataDict.Add(dataName, dataValue);
-                exists = true;
+                    if (!dataDict.ContainsKey(dataName))
+                        dataDict.Add(dataName, dataValue);
+                        exists = true;
             } else {
                 Debug.LogError("Data Name Not Found: " + dataName);
                 return false;
@@ -101,4 +153,12 @@ public class SaveData :MonoBehaviour {
         else
             return false;
     }
+
+    private bool searchDataDict(string name) {
+        if (dataDict.ContainsKey(name)) {
+            return true;
+        } else
+            return false;
+    }
+    
 }

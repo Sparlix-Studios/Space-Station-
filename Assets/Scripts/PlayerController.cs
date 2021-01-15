@@ -25,6 +25,14 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         save = GetComponent<SaveData>();
         //NEVER save.addMoney AT START!!! (Or Fix Bug)
+        StartCoroutine("testData");
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+    }
+
+    IEnumerator testData() {
+        yield return new WaitForSeconds(1f);
+        //save.addDataType("money", 0f, true);
+        save.addDataType("testData", 0f, true);
     }
 
     private void Update() {
@@ -34,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckView() {
         if (firstPerson) {
-            mainCam.SetActive(false);
+            //mainCam.SetActive(false);
             tpCam.SetActive(false);
             fpCam.SetActive(true);
         }
@@ -83,18 +91,18 @@ public class PlayerController : MonoBehaviour
         if (firstPerson)
             rb.MovePosition(transform.position + (fwdDir * Input.GetAxis("Vertical") * playerSpeed / 4) + (transform.right * Input.GetAxis("Horizontal") * playerSpeed / 4));
         else
-            rb.MovePosition(transform.position + (transform.forward * Input.GetAxis("Vertical") * playerSpeed / 4) + (transform.right * Input.GetAxis("Horizontal") * playerSpeed / 4));
+            rb.velocity = new Vector3(Input.GetAxis("Vertical")*playerSpeed/4, 0, Input.GetAxis("Horizontal")*playerSpeed/4);
         if (Input.GetKeyDown("space") && isGrounded)
             rb.AddForce(transform.up * jumpHeight * 50);
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if (collision.collider.tag == "Ground")
+        if (collision.GetComponent<Collider>().tag == "Ground")
             isGrounded = true;
     }
 
     private void OnCollisionExit(Collision collision) {
-        if (collision.collider.tag == "Ground")
+        if (collision.GetComponent<Collider>().tag == "Ground")
             isGrounded = false;
     }
 }
