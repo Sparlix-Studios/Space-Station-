@@ -6,6 +6,8 @@ public class FirstPersonCam : MonoBehaviour
 {
 
     [SerializeField] GameObject player;
+    [SerializeField] GameObject cam;
+
 
     PlayerController playerController;
 
@@ -31,7 +33,7 @@ public class FirstPersonCam : MonoBehaviour
 
                 pitch = Mathf.Clamp(pitch, -60f, 90f);
 
-                transform.eulerAngles = new Vector3(pitch, roll, 0.0f);
+                cam.transform.eulerAngles = new Vector3(pitch, roll, 0.0f);
         }
     }
 }
