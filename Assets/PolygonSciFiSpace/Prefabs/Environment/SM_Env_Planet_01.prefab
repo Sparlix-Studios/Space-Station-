@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4775471703997378}
   - component: {fileID: 33511273833200748}
   - component: {fileID: 23932188636620658}
-  - component: {fileID: 64971835322495358}
   - component: {fileID: 3915381530204927554}
   m_Layer: 6
   m_Name: SM_Env_Planet_01
@@ -83,20 +82,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64971835322495358
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1913396514770628}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 8e216bc6fd7bb314b92321983fdd0c8b, type: 3}
 --- !u!54 &3915381530204927554
 Rigidbody:
   m_ObjectHideFlags: 0

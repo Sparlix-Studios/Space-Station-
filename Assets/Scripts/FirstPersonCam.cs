@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FirstPersonCam : MonoBehaviour
-{
+public class FirstPersonCam :MonoBehaviour {
 
     [SerializeField] GameObject player;
-    [SerializeField] GameObject cam;
+    [SerializeField] [Range(0, 5)] float sensitivity = 5f;
 
 
     PlayerController playerController;
@@ -17,23 +16,18 @@ public class FirstPersonCam : MonoBehaviour
         playerController = player.GetComponent<PlayerController>();
     }
 
-    float HSpeed = 5f;
-    float VSpeed = 5f;
-
     float pitch = 0.0f;
     float roll = 0.0f;
 
     private void Update() {
+        
+        if (Cursor.lockState == CursorLockMode.Locked && !playerController.inventory && !playerController.Paused) {
+            roll += sensitivity * Input.GetAxis("Mouse X");
+            pitch -= sensitivity * Input.GetAxis("Mouse Y");
 
-        firstPerson = playerController.firstPerson;
+            pitch = Mathf.Clamp(pitch, -60f, 90f);
 
-        if (Cursor.lockState == CursorLockMode.Locked) {
-                roll += HSpeed * Input.GetAxis("Mouse X");
-                pitch -= VSpeed * Input.GetAxis("Mouse Y");
-
-                pitch = Mathf.Clamp(pitch, -60f, 90f);
-
-                cam.transform.eulerAngles = new Vector3(pitch, roll, 0.0f);
+            transform.eulerAngles = new Vector3(pitch, roll, 0.0f);
         }
     }
 }

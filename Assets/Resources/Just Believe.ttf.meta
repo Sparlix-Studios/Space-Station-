@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 0cd9d6d602ed74c4fbea52a277f04864
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Just Believe
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 07f1079c14a047d4788574da634b1d66, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
